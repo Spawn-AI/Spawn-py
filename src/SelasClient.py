@@ -6,7 +6,7 @@ SUPABASE_URL = "https://lgwrsefyncubvpholtmh.supabase.co";
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxnd3JzZWZ5bmN1YnZwaG9sdG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njk0MDE0MzYsImV4cCI6MTk4NDk3NzQzNn0.o-QO3JKyJ5E-XzWRPC9WdWHY8WjzEFRRnDRSflLzHsc";
 
 class SelasClient:
-    def __init__(self, app_id, key, secret ):
+    def __init__(self, app_id, key, secret, worker_filter = { "branch" : "main" } ):
         postgrest_url = SUPABASE_URL
         postgrest_key = SUPABASE_KEY
         my_headers = {
@@ -19,6 +19,10 @@ class SelasClient:
         self.app_id = app_id
         self.key = key
         self.secret = secret
+
+        self.worker_filter = worker_filter
+
+        self.services = self.getServiceList()
 
     def rpc(self, fn_name, params = {}):
         params["p_app_id"] = self.app_id
@@ -41,8 +45,8 @@ class SelasClient:
     def getAppUserToken(self, app_user_id):
         return self.rpc("app_owner_get_user_token_value", {"p_app_user_id": app_user_id})
 
-    def addCredit(self, app_user_id, amount):
-        return self.rpc("app_owner_add_user_credits", {"p_app_user_id": app_user_id, "p_amount": amount})
+    def setCredit(self, app_user_id, amount):
+        return self.rpc("app_owner_set_user_credits", {"p_app_user_id": app_user_id, "p_amount": amount})
 
     def getAppUserCredits(self, app_user_id):
         return self.rpc("app_owner_get_user_credits", {"p_app_user_id": app_user_id})
@@ -53,29 +57,21 @@ class SelasClient:
     def getServiceList(self):
         return self.rpc("app_owner_get_services")
 
-#   getAppUserJobHistoryDetail = async (args: { app_user_id: string; p_limit: number; p_offset: number }) => {
-#     const { data, error } = await this.rpc("app_owner_get_job_history_detail", {
-#       p_app_user_id: args.app_user_id,
-#       p_limit: args.p_limit,
-#       p_offset: args.p_offset
-#     });
-#     return { data, error };
-#   };
+    def getServiceConfigCost(self, service_name, job_config):
+        service_id = [a for a in self.services.data if a['name'] == service_name][0]['id']
+        return self.client.rpc("get_service_config_cost", {"p_service_id": service_id, 
+                                                        "p_config": job_config}).execute()
 
-#   /**
-#    * Create a new job. This job will be executed by the workers of the app.
-#    * @param service_id - the id of the service that will be executed.
-#    * @param job_config - the configuration of the job.
-#    * @returns the id of the job.
-#    */
-#   postJob = async (args: { service_id: string; job_config: string }) => {
-#     const { data, error } = await this.rpc("app_owner_post_job_admin", {
-#       p_service_id: args.service_id,
-#       p_job_config: args.job_config,
-#       p_worker_filter: this.worker_filter,
-#     });
-#     return { data, error };
-#   };
+    def postJob(self, service_name, job_config):
+        service_id = [a for a in self.services.data if a['name'] == service_name][0]['id']
+        return self.rpc("app_owner_post_job_admin", {"p_service_id": service_id, 
+                                                     "p_job_config": job_config,
+                                                     "p_worker_filter": self.worker_filter})
+
+    def getAppUserJobHistory(self, app_user_id, limit, offset):
+        return self.rpc("app_owner_get_job_history_detail", {"p_app_user_id": app_user_id, 
+                                                        "p_limit": limit, 
+                                                        "p_offset": offset})
 
 #   /**
 #    * Wait for the  the result of a job and returns it.
