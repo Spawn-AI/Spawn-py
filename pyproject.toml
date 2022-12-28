@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "selas"
+version = "0.1.0"
+description = "A python package to work with the Selas API"
+authors = ["Benjamin Trom <benjamintrom@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+postgrest-py = "^0.10.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0" # Tool for formatting code in a consistent way
+isort = "^5.11.4" # Tool for sorting imports
+pytest = "^7.2.0" # Tool for running tests
+
+[tool.poe.tasks]
+# Run black and isort formatters
+format = { shell = "black . & isort ."}
+
+[tool.black]
+# Fix line length to 96 characters when formatting with black
+# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#profile
+line-length = 96
+
+[tool.isort]
+# Make isort formatting compatible with black formatter
+# https://pycqa.github.io/isort/docs/configuration/config_files.html
+profile = "black"
