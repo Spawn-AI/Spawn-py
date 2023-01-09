@@ -2,7 +2,7 @@
 name = "selas"
 version = "0.1.0"
 description = "A python package to work with the Selas API"
-authors = ["Benjamin Trom <benjamintrom@gmail.com>"]
+authors = ["Benjamin Trom <benjamintrom@gmail.com>","Doryan Kaced <doryan.kaced@gmail.com"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

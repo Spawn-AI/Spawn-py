@@ -1,1 +1,1 @@
-from client import SelasClient
+from .client import SelasClient
