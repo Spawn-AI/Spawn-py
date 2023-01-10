@@ -1,4 +1,5 @@
 from postgrest import SyncPostgrestClient
+from pysher import Pusher
 
 SUPABASE_URL = "https://lgwrsefyncubvpholtmh.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxnd3JzZWZ5bmN1YnZwaG9sdG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njk0MDE0MzYsImV4cCI6MTk4NDk3NzQzNn0.o-QO3JKyJ5E-XzWRPC9WdWHY8WjzEFRRnDRSflLzHsc"
@@ -145,6 +146,17 @@ class SelasClient:
         }
         return self.postJob(service_name, job_config)
 
+    def __patchConfigToAddonConfig(self, patch_config):
+        patch_id = [a for a in self.addOns if a["name"] == patch_config["name"]][0]['id']
+        return {
+            "id": patch_id,
+            "config" : {
+                "alpha_unet": patch_config["alpha_unet"],
+                "alpha_text_encoder": patch_config["alpha_text_encoder"],
+                "steps": patch_config["steps"],
+            }
+        }
+
     def costStableDiffusion(self, prompt,
       service_name = "stable-diffusion-2-1-base",
       steps = 28,
@@ -157,8 +169,11 @@ class SelasClient:
       negative_prompt = 'ugly',
       image_format = "jpeg",
       translate_prompt = False,
-      nsfw_filter = False):
+      nsfw_filter = False,
+      patches = []):
         service = [a for a in self.services if a["name"] == service_name][0]
+
+        add_ons = [self.__patchConfigToAddonConfig(patch) for patch in patches]
 
         job_config = {
             "steps": steps,
@@ -173,6 +188,7 @@ class SelasClient:
             "image_format": image_format,
             "translate_prompt": translate_prompt,
             "nsfw_filter": nsfw_filter,
+            "add_ons": add_ons,
         };
 
         return self.client.rpc(
@@ -195,7 +211,10 @@ class SelasClient:
       negative_prompt = 'ugly',
       image_format = "jpeg",
       translate_prompt = False,
-      nsfw_filter = False):
+      nsfw_filter = False,
+      patches = []):
+
+        add_ons = [self.__patchConfigToAddonConfig(patch) for patch in patches]
 
         job_config = {
             "steps": steps,
@@ -210,6 +229,7 @@ class SelasClient:
             "image_format": image_format,
             "translate_prompt": translate_prompt,
             "nsfw_filter": nsfw_filter,
+            "add_ons": add_ons,
         };
 
         return self.postJob(service_name, job_config)
@@ -217,3 +237,11 @@ class SelasClient:
     # Results
     def getResults(self, job_id):
         return self.rpc("app_owner_get_result", {"p_job_id": job_id})
+
+    def subscribeToJob(self, job_id, callback):
+        client = Pusher("ed00ed3037c02a5fd912", cluster="eu")
+        channel_str = str(f"job-{job_id}")
+        print(channel_str)
+        channel = client.subscribe(channel_str)
+        print(channel)
+        channel.bind("result", callback)

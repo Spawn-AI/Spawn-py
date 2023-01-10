@@ -9,6 +9,17 @@ TEST_APP_ID = os.environ.get("TEST_APP_ID")
 TEST_APP_KEY = os.environ.get("TEST_APP_KEY")
 TEST_APP_SECRET = os.environ.get("TEST_APP_SECRET")
 
+selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+
+job = selas.runStableDiffusion("Selas",patches = [{
+    "name": 'Skippy Jack/f-boopboop',
+    "alpha_text_encoder": 0.5,
+    "alpha_unet": 0.5,
+    "steps": 1000,
+    }])
+
+selas.subscribeToJob(job.data['job_id'],print)
+
 # test the creation of a SelasClient object
 def test_SelasClient():
     selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
@@ -93,11 +104,32 @@ def test_stableDiffusionPostingFunctions():
     cost = selas.costStableDiffusion("Selas")
     assert cost.data > 0
 
-    job = selas.runStableDiffusion("Selas")
+    job = selas.runStableDiffusion("Selas",patches = [{
+        "name": 'Skippy Jack/f-boopboop',
+        "alpha_text_encoder": 0.5,
+        "alpha_unet": 0.5,
+        "steps": 1000,
+      }])
     assert job.data is not None
 
 def test_getResults():
     selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    results = selas.getResults("97271c2d-09dc-4cc4-8ac5-206039ff0487")
+    results = selas.getResults("c841db43-6b2c-4f94-aa8f-8b31e48517a6")
     assert results.data is not None
+
+def test_subscribe():
+    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+
+    job = selas.runStableDiffusion("Selas",patches = [{
+        "name": 'Skippy Jack/f-boopboop',
+        "alpha_text_encoder": 0.5,
+        "alpha_unet": 0.5,
+        "steps": 1000,
+      }])
+    
+    print(job.data["job_id"])
+
+    sub = selas.subscribeToJob(job.data['job_id'],print)
+    assert sub.data is not None
+
