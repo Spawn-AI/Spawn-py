@@ -59,6 +59,16 @@ def test_userManagingFunctions():
     assert history.data is not None
     assert len(history.data) != 0
 
+def test_isUser():
+    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+
+    is_user = selas.isUser("Skippy Jack")
+    assert is_user.data == True
+
+    is_user = selas.isUser("Skippy Jack2")
+    assert is_user.data == False
+
+
 def test_getServicesAndAddOnsList():
     selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 

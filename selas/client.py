@@ -48,6 +48,10 @@ class SelasClient:
     def __getUserId(self, external_id):
         return self.rpc("app_owner_get_user_id", {"p_app_user_external_id": external_id})
 
+    def isUser(self, external_id):
+        app_user_id = self.__getUserId(external_id)
+        return self.rpc("app_owner_is_user", {"p_app_user_id": app_user_id.data})
+
     def createToken(self, external_id):
         app_user_id = self.__getUserId(external_id)
         return self.rpc("app_owner_create_user_token", {"p_app_user_id": app_user_id.data})
