@@ -239,7 +239,7 @@ class SelasClient:
     def getResults(self, job_id):
         return self.rpc("app_owner_get_result", {"p_job_id": job_id})
 
-    async def subscribeToJob(self, job_id, callbacks):
-        await bind_to_events(job_id,callbacks)
+    def subscribeToJob(self, job_id, callbacks):
+        asyncio.run(bind_to_events(job_id,callbacks))
 
 

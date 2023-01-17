@@ -73,40 +73,27 @@ class PusherAsyncClient(object):
         return "{}://{}:{}{}".format(proto, host, port, path)
 
 async def bind_to_events(job_id, callbacks):
-    # Create an instance of PusherAsyncClient and pass it the appkey
     pusherclient = PusherAsyncClient("ed00ed3037c02a5fd912", cluster="eu")
-    # Connect to websocket
     pushersocket = await pusherclient.connect()
-
-    # Subscribe to channel
-
     channel = 'job-' + job_id
     print(channel)
 
     status = await pusherclient.subscribe(channel_name=channel)
 
     while True:
-        # This is because re-connection logic is not implemented yet
         if not pushersocket.open:
-            # on disconnections, reconnect
             print("Connection reconnecting")
-            # re-connect
             pushersocket = await pusherclient.connect()
-            # re-subscribe
-            status = await pusherclient.subscribe(channel_name='job-dfa7e563-13d2-4b2b-ba0a-6d651e38f441')
+            status = await pusherclient.subscribe(channel_name=channel)
             print("Subscription Status: %s" % (status))
         try:
-            # wait for msg
             msg = await asyncio.wait_for(pushersocket.recv(), 5)
-            # parse to json
             msg = json.loads(msg)
-            # print the msg
             if msg: 
                 if msg['event'] in callbacks:
                     callback_event = callbacks[msg['event']]
                     callback_event(msg)
         except asyncio.TimeoutError:
             pass
-            #print("asyncio timeout while waiting for ws msg")
         except Exception as e:
             print(e) 
