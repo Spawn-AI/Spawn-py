@@ -95,6 +95,14 @@ class SelasClient:
         add_on = [a for a in self.addOns if a["name"] == add_on_name][0]
         return self.rpc("app_owner_delete_add_on", {"p_add_on_id": add_on["id"]})
 
+    def publishAddOn(self, add_on_name):
+        add_on = [a for a in self.addOns if a["name"] == add_on_name][0]
+        return self.rpc("app_owner_publish_add_on", {"p_add_on_id": add_on["id"]})
+
+    def unpublishAddOn(self, add_on_name):
+        add_on = [a for a in self.addOns if a["name"] == add_on_name][0]
+        return self.rpc("app_owner_unpublish_add_on", {"p_add_on_id": add_on["id"]})
+        
     # post job
     def getCountActiveWorker(self):
         return self.rpc("get_active_worker_count", 

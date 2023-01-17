@@ -92,6 +92,18 @@ def test_addManagingFunctions():
     deleted = selas.deleteAddOn('Skippy Jack/f-compete2')
     assert deleted.data == True
 
+def test_publishAddOn():
+    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+
+    published = selas.publishAddOn('f-crampoute8')
+    assert published.data == True
+
+def test_unpublishAddOn():
+    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+
+    unpublished = selas.unpublishAddOn('f-crampoute8')
+    assert unpublished.data == True
+
 def test_addOnPostingFunctions():
     selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
