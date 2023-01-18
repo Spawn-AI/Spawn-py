@@ -1,5 +1,6 @@
 from postgrest import SyncPostgrestClient
-from pysher import Pusher
+from .bind_to_events import bind_to_events
+import asyncio
 
 SUPABASE_URL = "https://lgwrsefyncubvpholtmh.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxnd3JzZWZ5bmN1YnZwaG9sdG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njk0MDE0MzYsImV4cCI6MTk4NDk3NzQzNn0.o-QO3JKyJ5E-XzWRPC9WdWHY8WjzEFRRnDRSflLzHsc"
@@ -250,10 +251,7 @@ class SelasClient:
     def getResults(self, job_id):
         return self.rpc("app_owner_get_result", {"p_job_id": job_id})
 
-    def subscribeToJob(self, job_id, callback):
-        client = Pusher("ed00ed3037c02a5fd912", cluster="eu")
-        channel_str = str(f"job-{job_id}")
-        print(channel_str)
-        channel = client.subscribe(channel_str)
-        print(channel)
-        channel.bind("result", callback)
+    def subscribeToJob(self, job_id, callbacks):
+        asyncio.run(bind_to_events(job_id,callbacks))
+
+
