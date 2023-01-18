@@ -13,11 +13,20 @@ if __name__ == "__main__":
 
     selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    job = selas.runStableDiffusion("Selas", patches=[{
-        "name": 'Skippy Jack/f-boopboop',
-        "alpha_text_encoder": 0.5,
-        "alpha_unet": 0.5,
-        "steps": 1000,
-    }])
+    # job = selas.runStableDiffusion("Selas", patches=[{
+    #     "name": 'Skippy Jack/f-boopboop',
+    #     "alpha_text_encoder": 0.5,
+    #     "alpha_unet": 0.5,
+    #     "steps": 1000,
+    # }])
+
+    job = selas.runPatchTrainer(
+        [
+            {
+                "url": "https://img.sanctuary.fr/fiche/origin/78.jpg",
+                "label": "fcompo style, a group of people standing next to each other, by Otomo Katsuhiro, french comic style, zenescope, complex emotion, cover corp"
+            }
+      ]
+      ,"pypatch")
     
-    selas.subscribeToJob(job.data['job_id'],{'result':(lambda x : print(x))})
+    selas.subscribeToJob(job.data['job_id'],(lambda x : print(x)))

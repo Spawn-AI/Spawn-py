@@ -72,7 +72,7 @@ class PusherAsyncClient(object):
 
         return "{}://{}:{}{}".format(proto, host, port, path)
 
-async def bind_to_events(job_id, callbacks):
+async def bind_to_events(job_id, callback):
     pusherclient = PusherAsyncClient("ed00ed3037c02a5fd912", cluster="eu")
     pushersocket = await pusherclient.connect()
     channel = 'job-' + job_id
@@ -90,9 +90,10 @@ async def bind_to_events(job_id, callbacks):
             msg = await asyncio.wait_for(pushersocket.recv(), 5)
             msg = json.loads(msg)
             if msg: 
-                if msg['event'] in callbacks:
-                    callback_event = callbacks[msg['event']]
-                    callback_event(msg)
+                if msg['event'] == 'result':
+                    callback(msg['data'])
+                    if 'result' in msg['data']:
+                        break
         except asyncio.TimeoutError:
             pass
         except Exception as e:
