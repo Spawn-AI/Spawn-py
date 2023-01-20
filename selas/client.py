@@ -148,7 +148,8 @@ class SelasClient:
         description = '', 
         learning_rate = 1e-4, 
         steps = 100, 
-        rank = 4):
+        rank = 4,
+        callback = print):
         job_config = {
             "dataset": dataset,
             "patch_name": patch_name,
@@ -157,7 +158,9 @@ class SelasClient:
             "steps": steps,
             "rank": rank,
         }
-        return self.postJob(service_name, job_config)
+        job =  self.postJob(service_name, job_config)
+        self.subscribeToJob(job.data['job_id'],callback)
+        return job
 
     def __patchConfigToAddonConfig(self, patch_config):
         patch_id = [a for a in self.addOns if a["name"] == patch_config["name"]][0]['id']
@@ -225,7 +228,8 @@ class SelasClient:
       image_format = "jpeg",
       translate_prompt = False,
       nsfw_filter = False,
-      patches = []):
+      patches = [],
+      callback = print):
 
         add_ons = [self.__patchConfigToAddonConfig(patch) for patch in patches]
 
@@ -244,8 +248,9 @@ class SelasClient:
             "nsfw_filter": nsfw_filter,
             "add_ons": add_ons,
         };
-
-        return self.postJob(service_name, job_config)
+        job =  self.postJob(service_name, job_config)
+        self.subscribeToJob(job.data['job_id'],callback)
+        return job
 
     # Results
     def getResults(self, job_id):

@@ -76,7 +76,6 @@ async def bind_to_events(job_id, callback):
     pusherclient = PusherAsyncClient("ed00ed3037c02a5fd912", cluster="eu")
     pushersocket = await pusherclient.connect()
     channel = 'job-' + job_id
-    print(channel)
 
     status = await pusherclient.subscribe(channel_name=channel)
 
@@ -93,6 +92,7 @@ async def bind_to_events(job_id, callback):
                 if msg['event'] == 'result':
                     callback(msg['data'])
                     if 'result' in msg['data']:
+                        callback("Done")
                         break
         except asyncio.TimeoutError:
             pass
