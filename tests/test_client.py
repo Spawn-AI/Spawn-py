@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-from selas import SelasClient
+from spawn import SpawnClient
 
 load_dotenv()
 import os
@@ -9,108 +9,108 @@ TEST_APP_ID = os.environ.get("TEST_APP_ID")
 TEST_APP_KEY = os.environ.get("TEST_APP_KEY")
 TEST_APP_SECRET = os.environ.get("TEST_APP_SECRET")
 
-selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-job = selas.runStableDiffusion("Selas",patches = [{
+job = spawn.runStableDiffusion("Spawn",patches = [{
     "name": 'Skippy Jack/f-boopboop',
     "alpha_text_encoder": 0.5,
     "alpha_unet": 0.5,
     "steps": 1000,
     }])
 
-selas.subscribeToJob(job.data['job_id'],print)
+spawn.subscribeToJob(job.data['job_id'],print)
 
-# test the creation of a SelasClient object
-def test_SelasClient():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+# test the creation of a SpawnClient object
+def test_SpawnClient():
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    assert selas is not None
-    message = selas.echo("hello world")
+    assert spawn is not None
+    message = spawn.echo("hello world")
     assert message.data == "hello world"
 
 user_name = "Bertrand"
 def test_userManagingFunctions():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
-    assert selas is not None
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    assert spawn is not None
 
-    user = selas.createAppUser(user_name)
+    user = spawn.createAppUser(user_name)
     assert user.data is not None
 
-    token = selas.createToken(user_name)
+    token = spawn.createToken(user_name)
     assert token is not None
 
-    token_value = selas.getAppUserToken(user_name)
+    token_value = spawn.getAppUserToken(user_name)
     assert token_value.data is not None
     assert token.data == token_value.data
 
-    deleted = selas.deleteTokenOfAppUser(user_name)
+    deleted = spawn.deleteTokenOfAppUser(user_name)
     assert deleted.data is not None
 
-    credits = selas.getAppUserCredits(user_name)
+    credits = spawn.getAppUserCredits(user_name)
     assert credits.data == 0
 
-    credits = selas.setCredit(user_name, 100)
+    credits = spawn.setCredit(user_name, 100)
     assert credits.data == 100
 
-    credits = selas.getAppUserCredits(user_name)
+    credits = spawn.getAppUserCredits(user_name)
     assert credits.data == 100
 
-    history = selas.getAppUserJobHistory("Skippy Jack", 10, 0)
+    history = spawn.getAppUserJobHistory("Skippy Jack", 10, 0)
     assert history.data is not None
     assert len(history.data) != 0
 
 def test_isUser():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    is_user = selas.isUser("Skippy Jack")
+    is_user = spawn.isUser("Skippy Jack")
     assert is_user.data == True
 
-    is_user = selas.isUser("Skippy Jack2")
+    is_user = spawn.isUser("Skippy Jack2")
     assert is_user.data == False
 
 
 def test_getServicesAndAddOnsList():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    assert selas is not None
-    services = selas.getServiceList()
+    assert spawn is not None
+    services = spawn.getServiceList()
     assert services.data is not None
     assert len(services.data) > 0
-    addons = selas.getAddOnList()
+    addons = spawn.getAddOnList()
     assert addons.data is not None
     assert len(addons.data) > 0
 
 def test_addManagingFunctions():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    renamed = selas.renameAddOn('Skippy Jack/f-compote2','f-compete2')
+    renamed = spawn.renameAddOn('Skippy Jack/f-compote2','f-compete2')
     assert renamed.data == True
 
-    shared = selas.shareAddOn('Skippy Jack/f-compete2','Bertrand')
+    shared = spawn.shareAddOn('Skippy Jack/f-compete2','Bertrand')
     assert shared.data == True
 
-    deleted = selas.deleteAddOn('Skippy Jack/f-compete2')
+    deleted = spawn.deleteAddOn('Skippy Jack/f-compete2')
     assert deleted.data == True
 
 def test_publishAddOn():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    published = selas.publishAddOn('f-crampoute8')
+    published = spawn.publishAddOn('f-crampoute8')
     assert published.data == True
 
 def test_unpublishAddOn():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    unpublished = selas.unpublishAddOn('f-crampoute8')
+    unpublished = spawn.unpublishAddOn('f-crampoute8')
     assert unpublished.data == True
 
 def test_addOnPostingFunctions():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    cost = selas.costPatchTrainer(None,"archilul")
+    cost = spawn.costPatchTrainer(None,"archilul")
     assert cost.data > 0
 
-    train_id = selas.runPatchTrainer(
+    train_id = spawn.runPatchTrainer(
         [
             {
                 "url": "https://img.sanctuary.fr/fiche/origin/78.jpg",
@@ -121,12 +121,12 @@ def test_addOnPostingFunctions():
     assert train_id.data is not None
 
 def test_stableDiffusionPostingFunctions():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    cost = selas.costStableDiffusion("Selas")
+    cost = spawn.costStableDiffusion("Spawn")
     assert cost.data > 0
 
-    job = selas.runStableDiffusion("Selas",patches = [{
+    job = spawn.runStableDiffusion("Spawn",patches = [{
         "name": 'Skippy Jack/f-boopboop',
         "alpha_text_encoder": 0.5,
         "alpha_unet": 0.5,
@@ -135,15 +135,15 @@ def test_stableDiffusionPostingFunctions():
     assert job.data is not None
 
 def test_getResults():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    results = selas.getResults("c841db43-6b2c-4f94-aa8f-8b31e48517a6")
+    results = spawn.getResults("c841db43-6b2c-4f94-aa8f-8b31e48517a6")
     assert results.data is not None
 
 def test_subscribe():
-    selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+    spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-    job = selas.runStableDiffusion("Selas",patches = [{
+    job = spawn.runStableDiffusion("Spawn",patches = [{
         "name": 'Skippy Jack/f-boopboop',
         "alpha_text_encoder": 0.5,
         "alpha_unet": 0.5,
@@ -152,6 +152,6 @@ def test_subscribe():
     
     print(job.data["job_id"])
 
-    sub = selas.subscribeToJob(job.data['job_id'],print)
+    sub = spawn.subscribeToJob(job.data['job_id'],print)
     assert sub.data is not None
 

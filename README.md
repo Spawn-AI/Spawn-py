@@ -1,65 +1,65 @@
-# Selas Python
+# Spawn Python
 
-A Python implementation of the Selas protocol.
+A Python implementation of the Spawn protocol.
 
 ## Overview
 
-The Selas Python module is a python implementation of the Selas protocol. It allows you to run jobs on the Selas platform from your python code. You can find the source code for the Selas Python module on [GitHub](https://github.com/SelasAI/selas-py). The Selas Python module is licensed under the [MIT License](https://opensource.org/licenses/MIT). The Selas Python module is currently in beta, so please report any bugs or issues you encounter.
+The Spawn Python module is a python implementation of the Spawn protocol. It allows you to run jobs on the Spawn platform from your python code. You can find the source code for the Spawn Python module on [GitHub](https://github.com/SpawnAI/spawn-py). The Spawn Python module is licensed under the [MIT License](https://opensource.org/licenses/MIT). The Spawn Python module is currently in beta, so please report any bugs or issues you encounter.
 
 ## Installation
 
 Install the library using pip:
 
 ```bash
-pip install selas
+pip install spawn
 ```
 
 ## Usage
 
-To use the Selas Python module, you need to require it in your JavaScript code and create a Selas client object. To get started, you need to create a Selas account and create an app. You can find more information about creating a Selas account and creating an app in the [Selas documentation](https://selas.ai/docs/). Once you have created an app, you can get the app_id, key, and secret from the app settings page. You can then use these values to create a Selas client object:
+To use the Spawn Python module, you need to require it in your JavaScript code and create a Spawn client object. To get started, you need to create a Spawn account and create an app. You can find more information about creating a Spawn account and creating an app in the [Spawn documentation](https://spawn.ai/docs/). Once you have created an app, you can get the app_id, key, and secret from the app settings page. You can then use these values to create a Spawn client object:
 
 
 ```py3
-from selas import SelasClient
+from spawn import SpawnClient
 
-selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 ```
 
 ### Administration of the users
 
 #### Authorizing or denying the access to the services
 
-Using the Selas-py client, you can manage how your customers can access our services. 
+Using the Spawn-py client, you can manage how your customers can access our services. 
 
 To allow a user to access our services, you first need to create an app user. During the creation, you need to provide an identifier that will be necessary to access to the usage data. It will be refered in this client as an external id. This external id can be an email, a username, a phone number, a crypto wallet address, etc. 
 
 ```py
-user = selas.createAppUser(user_name)
+user = spawn.createAppUser(user_name)
 ```
 
 Once a user is created, you can allow or deny the usage of paid services for this user. This is done by handling the tokens of the user. You can create a token for a user by providing the external id of the user.
 
 
 ```py
-token = selas.createToken(user_name)
+token = spawn.createToken(user_name)
 ```
 
 There is no need to store the token in your database. You can retrieve it at any time by providing the external id of the user.
 
 ```py
-token_value = selas.getAppUserToken(user_name)
+token_value = spawn.getAppUserToken(user_name)
 ```
 
 There is no need to give a token for every utilisation. Once a token is created, it remain active until it is deleted. If you need to deny the access to a user, you can delete all the tokens of the user.
 
 ```py
-is_deleted = selas.deleteTokenOfAppUser(user_name)
+is_deleted = spawn.deleteTokenOfAppUser(user_name)
 ```
 
 Moreover, the AI usage of a user is limited by the amount of credit that you give it. You can set the credit of a user by providing the external id of the user and the amount of credit you want to give. This security is mandatory to avoid a user to use all the credit of your app.
 
 ```py
-credits = selas.setCredit(user_name, 100);
+credits = spawn.setCredit(user_name, 100);
 ```
 
 #### Accessing user usage
@@ -68,39 +68,39 @@ As the administror of your application, you can access all the informations that
 
 You can get the credit of a user by providing the external id of the user.
 ```py
-credits = selas.getAppUserCredits(user_name)
+credits = spawn.getAppUserCredits(user_name)
 ```
 
 You can get the history of all the jobs that a user has run on our service.
 ```py
-history = selas.getAppUserJobHistory(user_name, 10, 0)
+history = spawn.getAppUserJobHistory(user_name, 10, 0)
 ```
 
 If you want to get the specific result of a job (be it an image or an add-on), you can user the getResult method. You need to provide the job_id of the job you want to get the result of. It will return a json object with the result of the job.
 ```py
-results = selas.getResults(job_id)
+results = spawn.getResults(job_id)
 ```
 
 As your user will be able to create add-ons, you will have a complete right to access them. All add-ons create by your customers and by you will be accessible by the getAddOnList method. It will return a json object with all the add-ons of your app.
 ```py
-addons = selas.getAddOnList()
+addons = spawn.getAddOnList()
 ```
 
 Moreover, you can delete, share or rename any add-on created on your application.
 ```py
-is_renamed = selas.renameAddOn('User1/landscape add-on', 'forest add-on')
+is_renamed = spawn.renameAddOn('User1/landscape add-on', 'forest add-on')
 
-is_shared = selas.shareAddOn('User1/forest add-on', 'Benoit')
+is_shared = spawn.shareAddOn('User1/forest add-on', 'Benoit')
 
-is_deleted = selas.deleteAddOn('User1/forest add-on');
+is_deleted = spawn.deleteAddOn('User1/forest add-on');
 ```
 
 
 ### Usage of IA services
 
-Even if this the Selas-py client is created to manage applications and its users, it has all the needed methods for running jobs on the Selas platform. When running jobs on Selas-py, you are seen as a super-user and do not have to use tokens or credit.
+Even if this the Spawn-py client is created to manage applications and its users, it has all the needed methods for running jobs on the Spawn platform. When running jobs on Spawn-py, you are seen as a super-user and do not have to use tokens or credit.
 
-To know how many workers are active on the Selas platform, you can use the getCountActiveWorker method. It will return the number of workers for each service.
+To know how many workers are active on the Spawn platform, you can use the getCountActiveWorker method. It will return the number of workers for each service.
 ```py
 count_workers = client.getCountActiveWorker();
 ```
@@ -168,12 +168,12 @@ result = client.getResult(response['job_id']);
 The following example shows how to run a patch creation job with minimal parameters.
 
 ```py
-selas = SelasClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
 
-cost = selas.costPatchTrainer(None,"archilul")
+cost = spawn.costPatchTrainer(None,"archilul")
 assert cost.data > 0
 
-train_id = selas.runPatchTrainer(
+train_id = spawn.runPatchTrainer(
     [
         {
             "url": "https://img.sanctuary.fr/fiche/origin/78.jpg",
@@ -187,12 +187,12 @@ train_id = selas.runPatchTrainer(
 To get the cost of a job without posting it, you can use the costPatchTrainer method. Its syntax is the same as the runPatchTrainer method.
 
 ```py
-cost = await selas.costPatchTrainer(dataset, "my_patch");
+cost = await spawn.costPatchTrainer(dataset, "my_patch");
 ```
 
 To train a patch, you need a list of images and label that will be used to train the patch. They will alter the stable diffusion model to generate images that are similar to the images you provide. The label is used to describe the images you provide. It can be a sentence or a list of words.
 
 ## Documentation
 
-For more information about the Selas Python module, please refer to the [Selas Python documentation](https://selas.ai/docs/selas-py).
+For more information about the Spawn Python module, please refer to the [Spawn Python documentation](https://spawn.ai/docs/spawn-py).
 
