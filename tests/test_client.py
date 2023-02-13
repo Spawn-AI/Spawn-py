@@ -9,14 +9,9 @@ TEST_APP_ID = os.environ.get("TEST_APP_ID")
 TEST_APP_KEY = os.environ.get("TEST_APP_KEY")
 TEST_APP_SECRET = os.environ.get("TEST_APP_SECRET")
 
-spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET)
+spawn = SpawnClient(TEST_APP_ID, TEST_APP_KEY, TEST_APP_SECRET, external_id="Skippy Jack")
 
-job = spawn.runStableDiffusion("Spawn",patches = [{
-    "name": 'Skippy Jack/f-boopboop',
-    "alpha_text_encoder": 0.5,
-    "alpha_unet": 0.5,
-    "steps": 1000,
-    }])
+job = spawn.runStableDiffusion("Spawn")
 
 spawn.subscribeToJob(job.data['job_id'],print)
 

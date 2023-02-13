@@ -3,8 +3,7 @@ from .bind_to_events import bind_to_events
 import asyncio
 
 SUPABASE_URL = "https://lgwrsefyncubvpholtmh.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxnd3JzZWZ5bmN1YnZwaG9sdG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njk0MDE0MzYsImV4cCI6MTk4NDk3NzQzNn0.o-QO3JKyJ5E-XzWowner_rpc9WdWHY8WjzEFRRnDRSflLzHsc"
-
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxnd3JzZWZ5bmN1YnZwaG9sdG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njk0MDE0MzYsImV4cCI6MTk4NDk3NzQzNn0.o-QO3JKyJ5E-XzWRPC9WdWHY8WjzEFRRnDRSflLzHsc"
 
 class SpawnClient:
     def __init__(self, app_id, key, secret, external_id = None, worker_filter={"branch": "prod"}):
@@ -147,7 +146,7 @@ class SpawnClient:
             )
         else:
             return self.user_rpc(
-                "app_user_post_job",
+                "post_job",
                 {
                     "p_service_id": service['id'],
                     "p_job_config": job_config,
