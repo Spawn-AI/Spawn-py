@@ -37,18 +37,37 @@ class SpawnClient:
         self.services = self.getServiceList().data
         self.addOns = self.getAddOnList().data
 
+    def handle_error(self, error):
+        if error.code == "":
+            raise Exception("The database cannot be reached. Contact the administrator.)")
+        if error.message == "Invalid API key":
+            raise Exception("Invalid API key. Contact the administrator.")
+        if error.code == "22P02":
+            raise Exception("The credentials are not correct. Contact the administrator.")
+        if error.code == "P0001":
+            raise Exception(error.message)
+        if error.code == "23505":
+            raise Exception("This object already exists.")
+        raise Exception("An unexpected error occured. Contact the administrator. " + error.message);
     def owner_rpc(self, fn_name, params={}):
         params["p_app_id"] = self.app_id
         params["p_key"] = self.key
         params["p_secret"] = self.secret
-        return self.client.rpc(fn_name, params).execute()
+        try:
+            return self.client.rpc(fn_name, params).execute()
+        except Exception as e:
+            self.handle_error(e)
+        
     
     def user_rpc(self, fn_name, params={}):
         params["p_app_id"] = self.app_id
         params["p_key"] = self.key
         params["p_app_user_id"] = self.app_user_id.data
         params["p_app_user_token"] = self.app_user_token
-        return self.client.rpc(fn_name, params).execute()
+        try:
+            return self.client.rpc(fn_name, params).execute()
+        except Exception as e:
+            self.handle_error(e)
 
     def echo(self, message):
         return self.owner_rpc("app_owner_echo", {"message_app_owner": message})
